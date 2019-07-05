@@ -146,6 +146,7 @@ module.exports = function(content) {
         exportsString = "export default ";
 	}
 
+	var resourcePath = this.resourcePath;
  	return exportsString + content.replace(/xxxHTMLLINKxxx[0-9\.]+xxx/g, function(match) {
 		if(!data[match]) return match;
 
@@ -153,7 +154,7 @@ module.exports = function(content) {
 
 		var dataMatch = data[match];
 		if (config.replace) {
-			var replaceResult = config.replace(dataMatch);
+			var replaceResult = config.replace(dataMatch, resourcePath);
 			if (replaceResult === true) {
 				dataMatch = dataMatch;
 			} else if (replaceResult === false) {
