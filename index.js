@@ -41,7 +41,7 @@ module.exports = function(content) {
 	var root = config.root;
 
 	// Unicode u2028 line separators need to be escaped to not break parsing:
-	content = content.replace('\u2028', '\n');
+	content = content.replace(/\u2028/g, '\n');
 	var links = attrParse(content, function(tag, attr) {
 		var res = attributes.find(function(a) {
 			if (a.charAt(0) === ':') {
