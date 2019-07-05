@@ -1,6 +1,7 @@
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
+	Modified by Aria Buckles @ariabuckles
 */
 var htmlMinifier = require("html-minifier");
 var attrParse = require("./lib/attributesParser");
@@ -147,15 +148,28 @@ module.exports = function(content) {
 
  	return exportsString + content.replace(/xxxHTMLLINKxxx[0-9\.]+xxx/g, function(match) {
 		if(!data[match]) return match;
-		
+
 		var urlToRequest;
 
-		if (config.interpolate === 'require') {
-			urlToRequest = data[match];
-		} else {
-			urlToRequest = loaderUtils.urlToRequest(data[match], root);
+		var dataMatch = data[match];
+		if (config.replace) {
+			var replaceResult = config.replace(dataMatch);
+			if (replaceResult === true) {
+				dataMatch = dataMatch;
+			} else if (replaceResult === false) {
+				return dataMatch;
+			} else {
+				dataMatch = replaceResult;
+			}
 		}
-		
+
+
+		if (config.interpolate === 'require') {
+			urlToRequest = dataMatch;
+		} else {
+			urlToRequest = loaderUtils.urlToRequest(dataMatch, root);
+		}
+
 		return '" + require(' + JSON.stringify(urlToRequest) + ') + "';
 	}) + ";";
 
